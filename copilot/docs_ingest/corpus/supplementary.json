@@ -1,0 +1,52 @@
+[
+  {
+    "function_name": "groupby",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.groupby.html",
+    "text": "DataFrame.groupby(by=None, axis=0, level=None, as_index=True, sort=True, group_keys=True, observed=False, dropna=True) groups rows sharing the same value(s) in 'by' so an aggregation (sum, mean, count, etc.) can be applied per group. 'by' can be a column name, a list of column names, or a mapping/Series. Common errors: passing a column name that doesn't exist raises a KeyError -- check the exact column name and case. Calling an aggregation like .sum() on a groupby result that includes non-numeric columns can raise a TypeError in newer pandas versions; pass numeric_only=True or select only numeric columns first, e.g. df.groupby('region')['sales'].sum(). By default dropna=True, so rows with NaN in the groupby key are silently dropped from the result -- set dropna=False to keep them as their own group."
+  },
+  {
+    "function_name": "merge",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.merge.html",
+    "text": "DataFrame.merge(right, how='inner', on=None, left_on=None, right_on=None, suffixes=('_x','_y')) combines two DataFrames on one or more shared keys. how='inner' (default) keeps only matching keys in both frames; how='left'/'right'/'outer' change that behavior. If the join columns have different names in each frame, use left_on and right_on instead of on. A common error is a KeyError when 'on' references a column that doesn't exist in one of the two frames -- verify the column exists in both df.columns before merging. Duplicate column names not used as join keys get suffixes '_x'/'_y' automatically; override with the suffixes argument if this causes confusion downstream."
+  },
+  {
+    "function_name": "pivot_table",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.pivot_table.html",
+    "text": "pandas.pivot_table(data, values=None, index=None, columns=None, aggfunc='mean', fill_value=None) reshapes data into a spreadsheet-style pivot. 'index' becomes the row grouping, 'columns' becomes the column grouping, 'values' is the column being aggregated, and aggfunc controls how (default is mean, not sum -- a frequent source of surprising totals). If a combination of index/columns has no data, the cell is NaN unless fill_value is set. A common error is a KeyError when 'values', 'index', or 'columns' reference a column name not present in the DataFrame -- double check exact spelling and case against df.columns."
+  },
+  {
+    "function_name": "astype",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.Series.astype.html",
+    "text": "Series.astype(dtype, errors='raise') casts a Series to a different dtype. Converting a column containing NaN to an integer type raises a ValueError, because NaN cannot be represented in most integer dtypes -- use a nullable integer type like 'Int64' (capital I) instead of 'int64', or fillna() first. Converting a string column with non-numeric entries (e.g. 'N/A', blank strings) to float/int with astype directly raises a ValueError; use pandas.to_numeric(series, errors='coerce') instead, which turns unparseable values into NaN rather than raising."
+  },
+  {
+    "function_name": "to_datetime",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.to_datetime.html",
+    "text": "pandas.to_datetime(arg, errors='raise', format=None) parses strings or numbers into datetime64 values. Mixed date formats within a single column (e.g. '01/02/2024' and '2024-01-02' together) can raise a ValueError or silently misparse day/month order -- pass an explicit format string when the format is known, or errors='coerce' to turn unparseable rows into NaT instead of raising. When computing date differences, subtracting two datetime64 columns produces a Timedelta, not a plain number; use .dt.days or similar accessors to get a numeric value."
+  },
+  {
+    "function_name": "loc / iloc indexing",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.loc.html",
+    "text": "DataFrame.loc[] indexes by label (column/index name), while .iloc[] indexes by integer position. A frequent bug is chained indexing like df[df.a > 5]['b'] = 1, which raises a SettingWithCopyWarning and may silently fail to modify the original DataFrame -- use df.loc[df.a > 5, 'b'] = 1 instead. A KeyError from .loc[] usually means the label doesn't exist in the index or columns; a KeyError from .iloc[] indicates an out-of-range integer position."
+  },
+  {
+    "function_name": "fillna / dropna",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.fillna.html",
+    "text": "DataFrame.fillna(value=None, method=None) replaces missing (NaN) values; DataFrame.dropna(axis=0, how='any', subset=None) removes rows or columns containing missing values. Aggregations like .sum() and .mean() skip NaN by default (skipna=True), so nulls often don't need explicit handling before those specific calls -- but comparisons, groupby keys, and type conversions usually do need fillna/dropna applied first, or the result silently drops rows (groupby with dropna=True default) or raises (astype to int with NaN present)."
+  },
+  {
+    "function_name": "value_counts",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.Series.value_counts.html",
+    "text": "Series.value_counts(normalize=False, dropna=True) counts unique values in a Series, sorted descending by count. Set normalize=True to get proportions instead of raw counts. By default NaN values are excluded from the count (dropna=True); set dropna=False to include a count of missing values as their own category."
+  },
+  {
+    "function_name": "plt.savefig",
+    "source_url": "https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html",
+    "text": "matplotlib.pyplot.savefig(fname, dpi=None, bbox_inches=None) writes the current figure to a file; the format is inferred from the file extension (.png, .pdf, .svg, etc.). A blank or clipped-looking chart is often caused by calling savefig() before all plotting calls (e.g. plt.title(), legends) have been made, or by not calling plt.tight_layout() before savefig() when labels get cut off. Calling plt.show() in a non-interactive/headless context (e.g. the 'Agg' backend) has no effect and is unnecessary before savefig()."
+  },
+  {
+    "function_name": "resample",
+    "source_url": "https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.resample.html",
+    "text": "DataFrame.resample(rule, on=None) groups time-series data into fixed time buckets (e.g. 'D' for day, 'W' for week, 'M' for month) so an aggregation can be applied per bucket -- similar to groupby but for time. resample() requires either a DatetimeIndex or an 'on' argument pointing to a datetime column; calling resample() on a DataFrame whose date column is still a string/object dtype raises a TypeError -- convert with pandas.to_datetime() first."
+  }
+]
