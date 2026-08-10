@@ -1,0 +1,13 @@
+streamlit>=1.36
+pandas>=2.2
+numpy>=1.26
+openpyxl>=3.1
+matplotlib>=3.9
+seaborn>=0.13
+plotly>=5.24
+chromadb>=0.5
+sentence-transformers>=3.0
+langchain>=0.3
+langchain-core>=0.3
+langchain-anthropic>=0.3
+langchain-openai>=0.2
