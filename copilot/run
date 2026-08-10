@@ -1,0 +1,15 @@
+python3 -m venv venv && source venv/bin/activate
+
+df -h /   #for checking space
+
+pip install torch --index-url https://download.pytorch.org/whl/cpu
+pip install -r requirements.txt
+
+
+
+export COPILOT_PROVIDER=openai_compatible
+export COPILOT_API_BASE=https://api.groq.com/openai/v1
+export COPILOT_API_KEY="your api key"
+export COPILOT_MODEL=llama-3.3-70b-versatile
+env | grep COPILOT
+streamlit run app.py
